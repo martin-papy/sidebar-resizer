@@ -34,14 +34,20 @@ Hooks.once('ready', () => {
   }
 });
 
-// The sidebar re-renders on tab changes and collapse/expand; re-assert the
-// handle and the saved width each time.
+// The sidebar re-renders on tab changes; re-assert the handle and saved width.
 Hooks.on('renderSidebar', () => {
   if (!getSetting(SETTINGS.ENABLE_SIDEBAR)) return;
   safely('sidebar resize (render)', () => {
     attachSidebarResizer();
     restoreSidebarWidth();
   });
+});
+
+// Expand/collapse fires `collapseSidebar` (not `renderSidebar`) without
+// re-rendering; re-assert the saved width so an expand shows the user's size.
+Hooks.on('collapseSidebar', () => {
+  if (!getSetting(SETTINGS.ENABLE_SIDEBAR)) return;
+  safely('sidebar resize (collapse)', () => restoreSidebarWidth());
 });
 
 // The chat input relocates between surfaces; re-attach on each chat render.

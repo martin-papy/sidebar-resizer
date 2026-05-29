@@ -62,11 +62,19 @@ function readCurrentWidth(el) {
 }
 
 /**
- * Re-apply the saved sidebar width, if one is stored and the sidebar is open.
+ * Re-apply the saved sidebar width, if one is stored.
+ *
+ * The width is applied even while the sidebar is collapsed. v13 sizes the
+ * collapsed rail through its own width, so `--sidebar-width` is dormant while
+ * collapsed but is set on the persistent `#sidebar` element — already correct
+ * the moment the user expands. This matters because expanding fires only the
+ * `collapseSidebar` hook (never `renderSidebar`) and does not re-render, so
+ * gating restore on the expanded state would leave the saved width unapplied
+ * after a reload and across collapse/expand cycles.
  */
 export function restoreSidebarWidth() {
   const el = getSidebarElement();
-  if (!el || isCollapsed()) return;
+  if (!el) return;
   const handle = el.querySelector(`:scope > .${HANDLE_CLASS}`);
   if (handle) positionHandle(el, handle);
   const saved = parsePx(getSetting(SETTINGS.SIDEBAR_WIDTH));
