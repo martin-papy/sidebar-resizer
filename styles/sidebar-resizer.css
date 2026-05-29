@@ -56,6 +56,14 @@
   flex-direction: column;
 }
 
+/* In a detached chat pop-out the window is the sizing control. Foundry pins the
+   input region to `width: var(--sidebar-width)`, so widening the window leaves
+   an empty column to its right. Let our managed region fill the window width.
+   Scoped to .sidebar-popout so the docked sidebar keeps its --sidebar-width. */
+.sidebar-popout .chat-form.chat-resizer-host {
+  width: auto;
+}
+
 /* Grow the editor wrappers; min-height:0 lets them shrink below content size.
    Toolbar (.editor-menu) and control rows are left at their natural height. */
 .chat-resizer-host textarea,
