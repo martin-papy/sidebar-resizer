@@ -56,7 +56,7 @@ release pipeline.
   "title": "Sidebar and Windows Resizer",
   "description": "Resize the sidebar, the chat input, and popped-out sidebar windows.",
   "version": "0.1.0",
-  "compatibility": { "minimum": "13", "verified": "13" },
+  "compatibility": { "minimum": "13", "verified": "14" },
   "esmodules": ["scripts/main.js"],
   "styles": ["styles/sidebar-resizer.css"],
   "languages": [
