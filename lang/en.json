@@ -1,0 +1,8 @@
+{
+  "sidebar-resizer.settings.enableSidebarResize.name": "Enable sidebar resize",
+  "sidebar-resizer.settings.enableSidebarResize.hint": "Show a drag handle on the inner edge of the sidebar to set its width. Your width is remembered on this device.",
+  "sidebar-resizer.settings.enableChatResize.name": "Enable chat input resize",
+  "sidebar-resizer.settings.enableChatResize.hint": "Show a drag handle on the top edge of the chat input to set its height. Your height is remembered on this device.",
+  "sidebar-resizer.settings.enableWindowResize.name": "Enable pop-out window resize",
+  "sidebar-resizer.settings.enableWindowResize.hint": "Make popped-out sidebar windows (Combat Tracker, Playlists, directories, etc.) resizable. Takes effect after a reload."
+}

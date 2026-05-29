@@ -1,0 +1,8 @@
+{
+  "sidebar-resizer.settings.enableSidebarResize.name": "Activer le redimensionnement de la barre latérale",
+  "sidebar-resizer.settings.enableSidebarResize.hint": "Affiche une poignée sur le bord intérieur de la barre latérale pour régler sa largeur. Votre largeur est mémorisée sur cet appareil.",
+  "sidebar-resizer.settings.enableChatResize.name": "Activer le redimensionnement de la zone de saisie du chat",
+  "sidebar-resizer.settings.enableChatResize.hint": "Affiche une poignée sur le bord supérieur de la zone de saisie du chat pour régler sa hauteur. Votre hauteur est mémorisée sur cet appareil.",
+  "sidebar-resizer.settings.enableWindowResize.name": "Activer le redimensionnement des fenêtres détachées",
+  "sidebar-resizer.settings.enableWindowResize.hint": "Rend redimensionnables les fenêtres détachées de la barre latérale (suivi de combat, listes de lecture, répertoires, etc.). Prend effet après un rechargement."
+}

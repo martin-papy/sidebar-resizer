@@ -1,0 +1,93 @@
+/* styles/sidebar-resizer.css */
+/* Drag handles for the sidebar (horizontal) and chat input (vertical).
+   Compositor-friendly: only background/opacity transition on hover. */
+
+.sidebar-resizer-handle {
+  position: absolute;
+  top: 0;
+  /* `left` is set inline in sidebar-resize.js to the icon rail's right edge so
+     the handle sits between the tab column and the content, not at the sidebar's
+     outer edge. The 0 here is only a fallback before that runs. */
+  left: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 30;
+  background: transparent;
+  transition: background-color 150ms ease-out;
+  touch-action: none;
+  /* #sidebar inherits pointer-events:none from #ui-right; re-enable here so the
+     handle is hoverable and draggable. Without this the cursor never changes. */
+  pointer-events: auto;
+}
+
+.sidebar-resizer-handle:hover {
+  background-color: var(--color-border-highlight, rgba(255, 255, 255, 0.25));
+}
+
+/* Hide the handle whenever the sidebar is collapsed. v13+ marks the expanded
+   state with `.expanded` on #sidebar-content; the handle is a later sibling of
+   it, so the general-sibling combinator reaches it. */
+#sidebar-content:not(.expanded) ~ .sidebar-resizer-handle {
+  display: none;
+}
+
+.chat-resizer-handle {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  cursor: row-resize;
+  z-index: 30;
+  background: transparent;
+  transition: background-color 150ms ease-out;
+  touch-action: none;
+}
+
+.chat-resizer-handle:hover {
+  background-color: var(--color-border-highlight, rgba(255, 255, 255, 0.25));
+}
+
+/* When we've actively sized the chat input region (marker added in
+   chat-resize.js), stretch the message editor to fill the new height so a bare
+   textarea — or the nested ProseMirror editor — grows instead of leaving an
+   empty void below it. Scoped to the marker so default chat layout is untouched. */
+.chat-resizer-host {
+  display: flex;
+  flex-direction: column;
+}
+
+/* In a detached chat pop-out the window is the sizing control. Foundry pins the
+   input region to `width: var(--sidebar-width)`, so widening the window leaves
+   an empty column to its right. Let our managed region fill the window width.
+   Scoped to .sidebar-popout so the docked sidebar keeps its --sidebar-width. */
+.sidebar-popout .chat-form.chat-resizer-host {
+  width: auto;
+}
+
+/* Grow the editor wrappers; min-height:0 lets them shrink below content size.
+   Toolbar (.editor-menu) and control rows are left at their natural height. */
+.chat-resizer-host textarea,
+.chat-resizer-host prose-mirror,
+.chat-resizer-host .editor,
+.chat-resizer-host .editor-container,
+.chat-resizer-host .editor-content {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* The ProseMirror chain is a column so the fill propagates down to the
+   contenteditable; its content area scrolls when text overflows. */
+.chat-resizer-host prose-mirror,
+.chat-resizer-host .editor,
+.chat-resizer-host .editor-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-resizer-host .editor-content {
+  overflow: auto;
+}
+
+.chat-resizer-host .ProseMirror {
+  height: 100%;
+}
