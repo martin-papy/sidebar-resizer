@@ -19,7 +19,7 @@ export function registerSettings() {
     game.settings.register(MODULE_ID, key, {
       name: `${MODULE_ID}.settings.${key}.name`,
       hint: `${MODULE_ID}.settings.${key}.hint`,
-      scope: 'client',
+      scope: 'world',
       config: true,
       type: Boolean,
       default: true,
