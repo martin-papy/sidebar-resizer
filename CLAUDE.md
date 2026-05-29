@@ -125,4 +125,6 @@ mcp__plugin_context7_context7__query-docs({ context7CompatibleLibraryID: "...", 
 - FoundryVTT API docs: https://foundryvtt.com/api/
 - Original (v12, abandoned) inspiration: https://github.com/saif-ellafi/foundryvtt-sidebar-resizer
 - Design specs: `docs/superpowers/specs/` · Implementation plans: `docs/superpowers/plans/`
+- FoundryVTT v13 Source : `../Foundry Virtual Tabletop/v13` (workspace sibling)
+- FoundryVTT v14 Source : `../Foundry Virtual Tabletop/v14` (workspace sibling)
 ```
