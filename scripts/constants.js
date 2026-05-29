@@ -42,5 +42,6 @@ export const DIRECTORY_CLASS_PATHS = [
   'tabs.CardsDirectory',
   'tabs.PlaylistDirectory',
   'tabs.JournalDirectory',
-  'apps.CompendiumDirectory',
+  'tabs.CompendiumDirectory',
+  'tabs.MacroDirectory',
 ];
