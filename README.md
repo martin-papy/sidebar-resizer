@@ -8,6 +8,8 @@ A FoundryVTT v13/v14 module that lets each user resize parts of the interface:
 
 Sizes are remembered per device. Each resizer can be toggled independently in the module settings.
 
+![images/Demo.gif](Demo.gif)
+
 ## Have an idea or a feedback ?
 
 If there's a workflow that annoys you, a small thing that could be smoother, or a feature you keep wishing existed — feel free to open a [GitHub issue](https://github.com/martin-papy/sidebar-resizer/issues) and describe it. A short note is plenty.
