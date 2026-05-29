@@ -33,3 +33,40 @@
 .chat-resizer-handle:hover {
   background-color: var(--color-border-highlight, rgba(255, 255, 255, 0.25));
 }
+
+/* When we've actively sized the chat input region (marker added in
+   chat-resize.js), stretch the message editor to fill the new height so a bare
+   textarea — or the nested ProseMirror editor — grows instead of leaving an
+   empty void below it. Scoped to the marker so default chat layout is untouched. */
+.chat-resizer-host {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Grow the editor wrappers; min-height:0 lets them shrink below content size.
+   Toolbar (.editor-menu) and control rows are left at their natural height. */
+.chat-resizer-host textarea,
+.chat-resizer-host prose-mirror,
+.chat-resizer-host .editor,
+.chat-resizer-host .editor-container,
+.chat-resizer-host .editor-content {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* The ProseMirror chain is a column so the fill propagates down to the
+   contenteditable; its content area scrolls when text overflows. */
+.chat-resizer-host prose-mirror,
+.chat-resizer-host .editor,
+.chat-resizer-host .editor-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-resizer-host .editor-content {
+  overflow: auto;
+}
+
+.chat-resizer-host .ProseMirror {
+  height: 100%;
+}

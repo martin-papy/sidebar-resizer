@@ -27,6 +27,10 @@ function findChatInput(root) {
 
 /** Apply a height (px) to the input region via inline flex-basis. */
 function applyHeight(el, height) {
+  // The marker scopes the fill CSS to a region we've actively sized, so the
+  // editor inside (textarea or the nested ProseMirror element) stretches to
+  // fill the new height instead of leaving an empty void below it.
+  el.classList.add('chat-resizer-host');
   el.style.flex = `0 0 ${height}px`;
 }
 
