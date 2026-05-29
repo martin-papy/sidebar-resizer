@@ -4,25 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repo State (read first)
 
-The module is **designed but not yet implemented**. The approved design is the source of truth:
-`docs/superpowers/specs/2026-05-29-sidebar-resizer-module-design.md`, with the build plan in
-`docs/superpowers/plans/`. The CI/release scaffold was copied from the sibling `markdown-paste`
-module and **still references `markdown-paste`** — see [Inherited scaffold to retarget](#inherited-scaffold-to-retarget).
-
-`scripts/`, `module.json`, `package.json`, `styles/`, `lang/`, and `tests/` do not exist yet — create
-them per the design spec.
+The module is **implemented**. The original design and build plan remain in
+`docs/superpowers/specs/2026-05-29-sidebar-resizer-module-design.md` and
+`docs/superpowers/plans/2026-05-29-sidebar-resizer-implementation.md` as historical reference.
 
 ## Commands
 
 ```bash
-npm install                           # dev deps only (jsdom for node:test); NO runtime deps
-npm test                              # run all tests via Node's built-in node:test runner
+npm install                           # dev deps only (eslint); NO runtime deps
+npm test                              # run all tests via Node's built-in node:test runner (tests/**/*.test.js)
+npm run lint                          # eslint scripts/ tests/
 node --test --import ./tests/setup.js tests/resize-core.test.js   # run a single test file
 ```
-
-There is **no `npm run vendor` step** for this module — unlike `markdown-paste`, it bundles no
-third-party libraries (no `marked`/`dompurify` equivalent). Anything implying a `vendor/` directory
-is leftover scaffold and should be removed.
 
 ## What This Is
 
@@ -44,27 +37,29 @@ Data flow: **`init` registers settings + enables window resize → `ready`/rende
 handles and restore saved sizes → drag updates the DOM live and persists on pointer release.**
 
 ```
-scripts/main.js            init + ready hooks; wires each feature in its own try/catch, gated by its enable* setting
-scripts/settings.js        MODULE_ID = 'sidebar-resizer'; client-scoped settings; getSetting/setSetting helpers
-scripts/constants.js       MIN/MAX bounds, setting keys, DIRECTORY_CLASSES list
-scripts/resize-core.js     PURE: clampSize(value,min,max), parsePx(str). No Foundry import — the only unit-tested code
-scripts/sidebar-resize.js  Foundry glue: horizontal handle on ui.sidebar.element, drag, persist+restore
-scripts/chat-resize.js     Foundry glue: vertical handle on the chat input region, drag, persist+restore
-scripts/window-resize.js   Foundry glue: set Class.DEFAULT_OPTIONS.window.resizable = true on directory classes
-styles/sidebar-resizer.css handle cursors, hit areas, hover affordance
-lang/{en,fr}.json          setting names/hints (English + French)
-tests/resize-core.test.js  node:test unit tests for clamp/parse
-tests/setup.js             --import anchor for the node:test runner
+scripts/main.js              init + ready/render hooks; wires each feature via the safely() guard, gated by its enable* setting
+scripts/settings.js          MODULE_ID = 'sidebar-resizer'; client-scoped settings; getSetting/setSetting helpers
+scripts/constants.js         MIN/MAX bounds, setting keys (SETTINGS), DIRECTORY_CLASS_PATHS list
+scripts/resize-core.js       PURE: clampSize(value,min,max), parsePx(str). No Foundry import
+scripts/sidebar-resize.js    Foundry glue: horizontal handle on ui.sidebar.element, drag, persist+restore
+scripts/chat-resize.js       Foundry glue: vertical handle on the chat input region, drag, persist+restore
+scripts/window-resize.js     Foundry glue: markClassResizable() (pure, tested) + enableWindowResize() over DIRECTORY_CLASS_PATHS
+styles/sidebar-resizer.css   handle cursors, hit areas, hover affordance
+lang/{en,fr}.json            setting names/hints (English + French)
+tests/resize-core.test.js    node:test unit tests for clampSize/parsePx
+tests/window-resize.test.js  node:test unit tests for markClassResizable
+tests/setup.js               --import anchor for the node:test runner
+eslint.config.js             flat ESLint config for scripts/ and tests/
 ```
 
-The guiding pattern (shared with `markdown-paste`): **many small single-purpose files; pure logic
-separated from Foundry glue.** Each Foundry-facing module depends only on `settings.js`, `constants.js`,
-and the pure `resize-core.js`, and is understandable in isolation.
+The guiding pattern: **many small single-purpose files; pure logic separated from Foundry glue.**
+Each Foundry-facing module depends only on `settings.js`, `constants.js`, and the pure `resize-core.js`,
+and is understandable in isolation.
 
 ### Cross-cutting invariants
 
-- **Isolation:** each resizer is wired in `main.js` inside its own try/catch and gated by its `enable*`
-  setting. One failing resizer console-warns (prefixed with `MODULE_ID`) and never breaks the others or core UI.
+- **Isolation:** each resizer is wired in `main.js` through the `safely(label, fn)` guard and gated by its
+  `enable*` setting. One failing resizer console-warns (prefixed with `MODULE_ID`) and never breaks the others or core UI.
 - **Idempotent attach:** render hooks fire repeatedly, so every handle-attach checks for an existing handle
   first — never stack duplicate handles or listeners.
 - **No mutation of shared data:** sizes are read/written via the settings helpers; DOM size via inline styles only.
@@ -86,9 +81,11 @@ All UI strings are keys like `sidebar-resizer.settings.<key>.name`. English in `
 ## Testing Strategy
 
 Tests run under Node's built-in `node:test` runner via the `tests/setup.js` `--import` anchor — **no
-Jest/Vitest**. Only the pure math in `resize-core.js` is unit-tested (`clampSize` bounds, `parsePx`
-parsing + fallback). The DOM/Foundry glue is kept thin and verified manually in a running v13 world:
-resize, reload to confirm persistence, pop out a directory to confirm resizability.
+Jest/Vitest**. Unit tests cover the pure logic only: `resize-core.js` (`clampSize` bounds, `parsePx`
+parsing + fallback) and `window-resize.js`'s pure `markClassResizable` (sets `resizable` on a class's
+`DEFAULT_OPTIONS.window`, creating intermediate objects, returning `false` for a missing class). The
+remaining DOM/Foundry glue is kept thin and verified manually in a running v13 world: resize, reload to
+confirm persistence, pop out a directory to confirm resizability.
 
 ## Development Workflow
 
@@ -103,19 +100,8 @@ Releases are automated by `.github/workflows/release.yml`, triggered by any `v*`
 merge-back to `develop`. Stable tags (`vX.Y.Z`) publish to FoundryVTT; pre-release tags
 (`vX.Y.Z-beta.N`, `-rc.N`) create a GitHub pre-release and skip the Foundry publish.
 
-The release zip bundles only the runtime files: `module.json scripts/ styles/ lang/` — **no `templates/`,
-no `vendor/`**. `docs/`, `README.md`, `CHANGELOG.md`, and `.github/` are repo-only.
-
-## Inherited scaffold to retarget
-
-These files were copied from `markdown-paste` and must be fixed for this module before they work:
-
-- `release.sh` — `DOWNLOAD_URL_BASE` and all `markdown-paste` strings → `sidebar-resizer`.
-- `.github/workflows/release.yml` — zip line, artifact names, and `markdown-paste.zip` → `sidebar-resizer`,
-  and drop `templates/`/`vendor/` from the zip.
-- `.github/workflows/test.yml` — remove the `npm run vendor` and `git diff vendor/` steps (no vendoring here).
-- `.github/workflows/update-deps.yml` — markdown-paste-specific (`marked`/`dompurify`); **delete it**, this module has no runtime deps.
-- `.coderabbit.yaml` — header comment says "Markdown Paste"; retarget cosmetically.
+The release zip bundles only the runtime files: `module.json scripts/ styles/ lang/`. `docs/`, `README.md`,
+`CHANGELOG.md`, and `.github/` are repo-only.
 
 ## Code Exploration
 
@@ -138,6 +124,5 @@ mcp__plugin_context7_context7__query-docs({ context7CompatibleLibraryID: "...", 
 
 - FoundryVTT API docs: https://foundryvtt.com/api/
 - Original (v12, abandoned) inspiration: https://github.com/saif-ellafi/foundryvtt-sidebar-resizer
-- Sibling module this scaffold derives from: https://github.com/martin-papy/markdown-paste
 - Design specs: `docs/superpowers/specs/` · Implementation plans: `docs/superpowers/plans/`
 ```
