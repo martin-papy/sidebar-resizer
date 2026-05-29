@@ -23,6 +23,10 @@ export function registerSettings() {
       config: true,
       type: Boolean,
       default: true,
+      // Each toggle wires its resizer at init/render time, so a change only
+      // takes effect on reload. Flagging it makes Foundry's settings form offer
+      // the standard "reload application?" prompt when the value actually changes.
+      requiresReload: true,
     });
   }
 
