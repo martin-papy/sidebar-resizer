@@ -1,0 +1,35 @@
+/* styles/sidebar-resizer.css */
+/* Drag handles for the sidebar (horizontal) and chat input (vertical).
+   Compositor-friendly: only background/opacity transition on hover. */
+
+.sidebar-resizer-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 30;
+  background: transparent;
+  transition: background-color 150ms ease-out;
+  touch-action: none;
+}
+
+.sidebar-resizer-handle:hover {
+  background-color: var(--color-border-highlight, rgba(255, 255, 255, 0.25));
+}
+
+.chat-resizer-handle {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  cursor: row-resize;
+  z-index: 30;
+  background: transparent;
+  transition: background-color 150ms ease-out;
+  touch-action: none;
+}
+
+.chat-resizer-handle:hover {
+  background-color: var(--color-border-highlight, rgba(255, 255, 255, 0.25));
+}
