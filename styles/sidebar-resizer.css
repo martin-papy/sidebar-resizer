@@ -5,6 +5,9 @@
 .sidebar-resizer-handle {
   position: absolute;
   top: 0;
+  /* `left` is set inline in sidebar-resize.js to the icon rail's right edge so
+     the handle sits between the tab column and the content, not at the sidebar's
+     outer edge. The 0 here is only a fallback before that runs. */
   left: 0;
   width: 6px;
   height: 100%;
@@ -13,10 +16,20 @@
   background: transparent;
   transition: background-color 150ms ease-out;
   touch-action: none;
+  /* #sidebar inherits pointer-events:none from #ui-right; re-enable here so the
+     handle is hoverable and draggable. Without this the cursor never changes. */
+  pointer-events: auto;
 }
 
 .sidebar-resizer-handle:hover {
   background-color: var(--color-border-highlight, rgba(255, 255, 255, 0.25));
+}
+
+/* Hide the handle whenever the sidebar is collapsed. v13+ marks the expanded
+   state with `.expanded` on #sidebar-content; the handle is a later sibling of
+   it, so the general-sibling combinator reaches it. */
+#sidebar-content:not(.expanded) ~ .sidebar-resizer-handle {
+  display: none;
 }
 
 .chat-resizer-handle {

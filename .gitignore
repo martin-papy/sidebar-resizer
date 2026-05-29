@@ -26,3 +26,4 @@ dist/
 .superpowers/
 temp/
 sidebar-resizer.code-workspace
+.playwright-mcp/

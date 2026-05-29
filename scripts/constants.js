@@ -6,6 +6,13 @@
 export const MIN_SIDEBAR_WIDTH = 200;
 /** Maximum sidebar width in pixels (defensive upper bound). */
 export const MAX_SIDEBAR_WIDTH = 1200;
+/**
+ * Foundry's default expanded sidebar content width (the `--sidebar-width` CSS
+ * custom property). Used as the drag start basis when the live value can't be read.
+ */
+export const DEFAULT_SIDEBAR_WIDTH = 300;
+/** The CSS custom property v13+ uses to size the sidebar content. */
+export const SIDEBAR_WIDTH_VAR = '--sidebar-width';
 /** Minimum chat input region height in pixels. */
 export const MIN_CHAT_HEIGHT = 60;
 /** Maximum chat input region height in pixels (defensive upper bound). */
