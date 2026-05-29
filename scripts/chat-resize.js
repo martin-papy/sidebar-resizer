@@ -34,6 +34,21 @@ function applyHeight(el, height) {
   el.style.flex = `0 0 ${height}px`;
 }
 
+/** @returns {boolean} true if the input region lives in a detached chat pop-out. */
+function isDetached(el) {
+  return !!el.closest('.sidebar-popout');
+}
+
+/**
+ * Make the input region grow with its window. The same `chat-resizer-host`
+ * marker stretches the editor to fill, and `flex: 1 1 auto` lets the region
+ * share the column's free space so resizing the window grows the box.
+ */
+function fillWithWindow(el) {
+  el.classList.add('chat-resizer-host');
+  el.style.flex = '1 1 auto';
+}
+
 /**
  * Attach the resize handle to a chat element's input region. Idempotent.
  * @param {HTMLElement} root  The chat log element from the render hook.
@@ -47,9 +62,16 @@ export function attachChatResizer(root) {
   handle.className = HANDLE_CLASS;
   input.prepend(handle);
 
-  // Restore a saved height immediately.
+  // A saved height (from a handle drag) takes priority in either context.
+  // Otherwise, in a detached pop-out the window itself is the sizing control, so
+  // let the input region grow with the window instead of staying a fixed default
+  // while only the message log absorbs the extra height.
   const saved = parsePx(getSetting(SETTINGS.CHAT_HEIGHT));
-  if (saved != null) applyHeight(input, saved);
+  if (saved != null) {
+    applyHeight(input, saved);
+  } else if (isDetached(input)) {
+    fillWithWindow(input);
+  }
 
   let startCoord = 0;
   let startSize = 0;
