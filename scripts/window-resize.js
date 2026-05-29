@@ -2,10 +2,8 @@
 // Makes popped-out sidebar directory windows user-resizable on v13/v14.
 // `markClassResizable` is pure (operates on a plain class-like object) and
 // unit-tested; `enableWindowResize` is the Foundry glue and is verified manually.
+import { MODULE_ID } from './settings.js';
 import { DIRECTORY_CLASS_PATHS } from './constants.js';
-
-// Temporary until settings.js exists (Task 5 restores the import).
-const MODULE_ID = 'sidebar-resizer';
 
 /**
  * Ensure a directory class's ApplicationV2 DEFAULT_OPTIONS marks its window as
