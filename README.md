@@ -8,7 +8,7 @@ A FoundryVTT v13/v14 module that lets each user resize parts of the interface:
 
 Sizes are remembered per device. Each resizer can be toggled independently in the module settings.
 
-![images/Demo.gif](Demo.gif)
+![Video Demo](images/Demo.gif)
 
 ## Have an idea or a feedback ?
 
