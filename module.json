@@ -1,6 +1,6 @@
 {
   "id": "sidebar-resizer",
-  "title": "Sidebar and Windows Resizer",
+  "title": "Resize Sidebar and Windows",
   "description": "Resize the sidebar, the chat input, and popped-out sidebar windows.",
   "version": "0.1.0",
   "authors": [
