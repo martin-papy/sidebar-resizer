@@ -16,6 +16,14 @@ If there's a workflow that annoys you, a small thing that could be smoother, or 
 
 <a href='https://ko-fi.com/E7O820GI4E' target='_blank' align="center"><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
+## Installation
+
+In Foundry's **Add-on Modules** tab → **Install Module** → paste this manifest URL:
+
+```
+https://github.com/martin-papy/sidebar-resizer/releases/latest/download/module.json
+```
+
 ## Compatibility
 
 - Minimum: FoundryVTT v13
