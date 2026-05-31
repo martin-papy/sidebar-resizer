@@ -1,7 +1,7 @@
 {
   "name": "sidebar-resizer-tests",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Dev-only — node test runner config for sidebar-resizer",
   "type": "module",
   "scripts": {
