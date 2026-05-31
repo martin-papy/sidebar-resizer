@@ -38,12 +38,25 @@ function applyWidth(el, width) {
 
 /**
  * Position the handle at the seam between the icon rail and the content, rather
- * than at the sidebar's outer edge. The rail (`#sidebar-tabs`) is the first
- * child; its width is the content's left offset.
+ * than at the sidebar's outer edge.
+ *
+ * Anchors to `#sidebar-content`'s left edge — the true seam — instead of the
+ * rail's `offsetWidth`. `offsetWidth` includes any trailing padding the icon
+ * rail picks up (e.g. monks-little-details adds 16px), which would drift the
+ * handle right of the seam. We use the content's `offsetLeft` (relative to its
+ * positioned ancestor, `#sidebar`) rather than a viewport-based bounding rect:
+ * `offsetLeft` reflects only the internal rail width, so it stays correct even
+ * when this runs mid-render while the sidebar's absolute position is still
+ * settling. Falls back to the rail's width if the content element is absent.
  * @param {HTMLElement} el      The sidebar element.
  * @param {HTMLElement} handle  The resize handle.
  */
 function positionHandle(el, handle) {
+  const content = el.querySelector(':scope > #sidebar-content');
+  if (content) {
+    handle.style.left = `${content.offsetLeft}px`;
+    return;
+  }
   const tabs = el.querySelector(':scope > #sidebar-tabs');
   handle.style.left = `${tabs ? tabs.offsetWidth : 0}px`;
 }
@@ -100,6 +113,17 @@ export function attachSidebarResizer() {
   handle.className = HANDLE_CLASS;
   el.appendChild(handle);
   positionHandle(el, handle);
+
+  // The rail↔content seam animates: `#sidebar-content` slides on a transitioned
+  // negative `margin-left` during expand/collapse, so the value read at render
+  // time is mid-flight. Re-assert once that transition settles. The listener
+  // lives on the persistent `#sidebar` (transitionend bubbles), so it survives
+  // inner re-renders that replace `#sidebar-content`, and runs only once.
+  el.addEventListener('transitionend', (e) => {
+    if (e.propertyName === 'margin-left' && e.target?.id === 'sidebar-content') {
+      positionHandle(el, handle);
+    }
+  });
 
   let startCoord = 0;
   let startSize = 0;
